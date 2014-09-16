@@ -37,3 +37,7 @@ func (h *httpHandler) RenderJson(v interface{}, status int) {
 func (h *httpHandler) RenderError(err string) {
 	h.Response.RenderError(err)
 }
+
+func (h *httpHandler) FormatBody(v interface{}) error {
+	return h.Request.FormatBody(v)
+}
