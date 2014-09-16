@@ -3,7 +3,7 @@
 * if key does not exist, return given default value
  */
 
-package utils
+package goutils
 
 import (
 	"fmt"
