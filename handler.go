@@ -7,17 +7,33 @@ import (
 )
 
 type httpHandler struct {
-	Env *GetStruct
-	P   *GetStruct
-	W   *RenderStruct
-	R   *RequestStruct
+	Env      *GetStruct
+	Param    *GetStruct
+	Response *RenderStruct
+	Request  *RequestStruct
 }
 
 func HttpHandler(c web.C, w http.ResponseWriter, r *http.Request) *httpHandler {
 	return &httpHandler{
-		Env: Getter(c.Env),
-		P:   Getter(c.URLParams),
-		W:   Render(w),
-		R:   Request(r),
+		Env:      Getter(c.Env),
+		Param:    Getter(c.URLParams),
+		Response: Render(w),
+		Request:  Request(r),
 	}
+}
+
+func (h *httpHandler) RenderHtml(path string) {
+	h.Response.RenderHtml(path)
+}
+
+func (h *httpHandler) RenderPage(v interface{}) {
+	h.Response.RenderPage(v)
+}
+
+func (h *httpHandler) RenderJson(v interface{}, status int) {
+	h.Response.RenderJson(v, status)
+}
+
+func (h *httpHandler) RenderError(err string) {
+	h.Response.RenderError(err)
 }
