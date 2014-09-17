@@ -1,6 +1,8 @@
 package goutils
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -72,4 +74,11 @@ func TestToJson(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	//fmt.Println(s)
+
+	testInterface(list)
+	testInterface(newM)
+}
+
+func testInterface(v interface{}) {
+	fmt.Println(reflect.TypeOf(v).Kind())
 }

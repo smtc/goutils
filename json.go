@@ -63,17 +63,41 @@ func ToStruct(data []byte, v interface{}) error {
 		return TIMEDEFAULT
 	}
 
+	getter := Getter(m)
+
 	fv := reflect.ValueOf(v).Elem()
 	var field reflect.Value
 	for i := 0; i < fv.NumField(); i++ {
 		field = fv.Field(i)
-		if field.Kind() == reflect.Struct && field.Type() == timeType {
-			typeField := fv.Type().Field(i)
-			tag := typeField.Tag.Get("json")
-			if tag == "" {
-				tag = strings.ToLower(typeField.Name)
+		typeField := fv.Type().Field(i)
+		tag := typeField.Tag.Get("json")
+		if tag == "" {
+			tag = strings.ToLower(typeField.Name)
+		}
+
+		switch field.Kind() {
+		case reflect.Bool:
+			m[tag] = getter.GetBool(tag, false)
+
+		case reflect.Int, reflect.Uint32:
+			m[tag] = getter.GetInt(tag, 0)
+
+		case reflect.Int64, reflect.Uint64:
+			m[tag] = getter.GetInt64(tag, 0)
+
+		case reflect.Float32:
+			m[tag] = getter.GetFloat32(tag, 0)
+
+		case reflect.Float64:
+			m[tag] = getter.GetFloat64(tag, 0)
+
+		case reflect.String:
+			m[tag] = getter.GetString(tag, "")
+
+		case reflect.Struct:
+			if field.Type() == timeType {
+				m[tag] = getTime(m[tag])
 			}
-			m[tag] = getTime(m[tag])
 		}
 	}
 

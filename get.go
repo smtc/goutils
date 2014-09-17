@@ -134,6 +134,9 @@ func (g *GetStruct) GetBool(key string, def bool) bool {
 		itf = ss[0]
 	}
 	if s, ok := itf.(string); ok {
+		if s == "1" || s == "on" {
+			return true
+		}
 		if b, err := strconv.ParseBool(s); err == nil {
 			return b
 		}

@@ -9,6 +9,7 @@ import (
 type httpHandler struct {
 	Env      *GetStruct
 	Param    *GetStruct
+	Query    *GetStruct
 	Response *RenderStruct
 	Request  *RequestStruct
 }
@@ -17,6 +18,7 @@ func HttpHandler(c web.C, w http.ResponseWriter, r *http.Request) *httpHandler {
 	return &httpHandler{
 		Env:      Getter(c.Env),
 		Param:    Getter(c.URLParams),
+		Query:    Getter(r.URL.Query()),
 		Response: Render(w),
 		Request:  Request(r),
 	}

@@ -2,7 +2,10 @@ package goutils
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"reflect"
 )
 
 type RequestStruct struct {
@@ -18,5 +21,16 @@ func Request(r *http.Request) *RequestStruct {
 func (r *RequestStruct) FormatBody(v interface{}) error {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(r.Body)
-	return ToStruct(buf.Bytes(), v)
+
+	switch reflect.ValueOf(v).Elem().Kind() {
+	case reflect.Struct:
+		fmt.Printf("%v", v)
+		return ToStruct(buf.Bytes(), v)
+	default:
+		if err := json.Unmarshal(buf.Bytes(), v); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
