@@ -3,7 +3,6 @@ package goutils
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"reflect"
 )
@@ -24,7 +23,6 @@ func (r *RequestStruct) FormatBody(v interface{}) error {
 
 	switch reflect.ValueOf(v).Elem().Kind() {
 	case reflect.Struct:
-		fmt.Printf("%v", v)
 		return ToStruct(buf.Bytes(), v)
 	default:
 		if err := json.Unmarshal(buf.Bytes(), v); err != nil {

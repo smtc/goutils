@@ -53,6 +53,12 @@ func (g *GetStruct) GetInt64(key string, def int64) int64 {
 	if i, ok := itf.(int); ok {
 		return int64(i)
 	}
+	if i, ok := itf.(float32); ok {
+		return int64(i)
+	}
+	if i, ok := itf.(float64); ok {
+		return int64(i)
+	}
 	if ss, ok := itf.([]string); ok {
 		itf = ss[0]
 	}
@@ -96,6 +102,13 @@ func (g *GetStruct) GetString(key string, def string) string {
 		return s
 	}
 	if ss, ok := itf.([]string); ok {
+		return strings.Join(ss, ",")
+	}
+	if si, ok := itf.([]interface{}); ok {
+		var ss []string
+		for _, s := range si {
+			ss = append(ss, fmt.Sprintf("%v", s))
+		}
 		return strings.Join(ss, ",")
 	}
 	if t, ok := itf.(time.Time); ok {
