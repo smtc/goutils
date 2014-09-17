@@ -143,6 +143,12 @@ func (g *GetStruct) GetBool(key string, def bool) bool {
 	if i, ok := itf.(int); ok {
 		return i > 0
 	}
+	if i, ok := itf.(float64); ok {
+		return i > 0
+	}
+	if i, ok := itf.(float32); ok {
+		return i > 0
+	}
 	if ss, ok := itf.([]string); ok {
 		itf = ss[0]
 	}
