@@ -45,24 +45,23 @@ func (g *GetStruct) GetInterface(key string, def interface{}) interface{} {
 	return val.Interface()
 }
 
-func (g *GetStruct) GetInt64(key string, def int64) int64 {
-	itf := g.GetInterface(key, def)
-	if i, ok := itf.(int64); ok {
+func ToInt64(v interface{}, def int64) int64 {
+	if i, ok := v.(int64); ok {
 		return i
 	}
-	if i, ok := itf.(int); ok {
+	if i, ok := v.(int); ok {
 		return int64(i)
 	}
-	if i, ok := itf.(float32); ok {
+	if i, ok := v.(float32); ok {
 		return int64(i)
 	}
-	if i, ok := itf.(float64); ok {
+	if i, ok := v.(float64); ok {
 		return int64(i)
 	}
-	if ss, ok := itf.([]string); ok {
-		itf = ss[0]
+	if ss, ok := v.([]string); ok {
+		v = ss[0]
 	}
-	if s, ok := itf.(string); ok {
+	if s, ok := v.(string); ok {
 		if i, err := strconv.ParseInt(s, 0, 64); err == nil {
 			return i
 		}
@@ -70,20 +69,28 @@ func (g *GetStruct) GetInt64(key string, def int64) int64 {
 	return def
 }
 
+func (g *GetStruct) GetInt64(key string, def int64) int64 {
+	v := g.GetInterface(key, def)
+	return ToInt64(v, def)
+}
+
+func ToInt(v interface{}, def int) int {
+	return int(ToInt64(v, int64(def)))
+}
+
 func (g *GetStruct) GetInt(key string, def int) int {
 	i := g.GetInt64(key, int64(def))
 	return int(i)
 }
 
-func (g *GetStruct) GetFloat64(key string, def float64) float64 {
-	itf := g.GetInterface(key, def)
-	if f, ok := itf.(float64); ok {
+func ToFloat64(v interface{}, def float64) float64 {
+	if f, ok := v.(float64); ok {
 		return f
 	}
-	if ss, ok := itf.([]string); ok {
-		itf = ss[0]
+	if ss, ok := v.([]string); ok {
+		v = ss[0]
 	}
-	if s, ok := itf.(string); ok {
+	if s, ok := v.(string); ok {
 		if f, err := strconv.ParseFloat(s, 64); err == nil {
 			return f
 		}
@@ -91,43 +98,55 @@ func (g *GetStruct) GetFloat64(key string, def float64) float64 {
 	return def
 }
 
+func (g *GetStruct) GetFloat64(key string, def float64) float64 {
+	v := g.GetInterface(key, def)
+	return ToFloat64(v, def)
+}
+
+func ToFloat32(v interface{}, def float32) float32 {
+	return float32(ToFloat64(v, float64(def)))
+}
+
 func (g *GetStruct) GetFloat32(key string, def float32) float32 {
 	f := g.GetFloat64(key, float64(def))
 	return float32(f)
 }
 
-func (g *GetStruct) GetString(key string, def string) string {
-	itf := g.GetInterface(key, def)
-	if s, ok := itf.(string); ok {
+func ToString(v interface{}, def string) string {
+	if s, ok := v.(string); ok {
 		return s
 	}
-	if ss, ok := itf.([]string); ok {
+	if ss, ok := v.([]string); ok {
 		return strings.Join(ss, ",")
 	}
-	if si, ok := itf.([]interface{}); ok {
+	if si, ok := v.([]interface{}); ok {
 		var ss []string
 		for _, s := range si {
 			ss = append(ss, fmt.Sprintf("%v", s))
 		}
 		return strings.Join(ss, ",")
 	}
-	if t, ok := itf.(time.Time); ok {
+	if t, ok := v.(time.Time); ok {
 		return t.Format(TIMEFORMAT)
 	}
 
-	return fmt.Sprintf("%v", itf)
+	return fmt.Sprintf("%v", v)
 }
 
-func (g *GetStruct) GetTime(key string, def time.Time, fmt string) time.Time {
-	itf := g.GetInterface(key, def)
-	if t, ok := itf.(time.Time); ok {
+func (g *GetStruct) GetString(key string, def string) string {
+	v := g.GetInterface(key, def)
+	return ToString(v, def)
+}
+
+func ToTime(v interface{}, def time.Time, ft string) time.Time {
+	if t, ok := v.(time.Time); ok {
 		return t
 	}
-	if ss, ok := itf.([]string); ok {
-		itf = ss[0]
+	if ss, ok := v.([]string); ok {
+		v = ss[0]
 	}
-	if s, ok := itf.(string); ok {
-		if t, err := time.Parse(fmt, s); err == nil {
+	if s, ok := v.(string); ok {
+		if t, err := time.Parse(ft, s); err == nil {
 			return t
 		}
 	}
@@ -135,24 +154,28 @@ func (g *GetStruct) GetTime(key string, def time.Time, fmt string) time.Time {
 	return def
 }
 
-func (g *GetStruct) GetBool(key string, def bool) bool {
-	itf := g.GetInterface(key, def)
-	if b, ok := itf.(bool); ok {
+func (g *GetStruct) GetTime(key string, def time.Time, ft string) time.Time {
+	v := g.GetInterface(key, def)
+	return ToTime(v, def, ft)
+}
+
+func ToBool(v interface{}, def bool) bool {
+	if b, ok := v.(bool); ok {
 		return b
 	}
-	if i, ok := itf.(int); ok {
+	if i, ok := v.(int); ok {
 		return i > 0
 	}
-	if i, ok := itf.(float64); ok {
+	if i, ok := v.(float64); ok {
 		return i > 0
 	}
-	if i, ok := itf.(float32); ok {
+	if i, ok := v.(float32); ok {
 		return i > 0
 	}
-	if ss, ok := itf.([]string); ok {
-		itf = ss[0]
+	if ss, ok := v.([]string); ok {
+		v = ss[0]
 	}
-	if s, ok := itf.(string); ok {
+	if s, ok := v.(string); ok {
 		if s == "1" || s == "on" {
 			return true
 		}
@@ -162,19 +185,30 @@ func (g *GetStruct) GetBool(key string, def bool) bool {
 	}
 
 	return def
+
 }
 
-func (g *GetStruct) GetBytes(key string, def []byte) []byte {
-	itf := g.GetInterface(key, def)
-	if b, ok := itf.([]byte); ok {
+func (g *GetStruct) GetBool(key string, def bool) bool {
+	v := g.GetInterface(key, def)
+	return ToBool(v, def)
+}
+
+func ToBytes(v interface{}, def []byte) []byte {
+	if b, ok := v.([]byte); ok {
 		return b
 	}
-	if ss, ok := itf.([]string); ok {
-		itf = ss[0]
+	if ss, ok := v.([]string); ok {
+		v = ss[0]
 	}
-	if s, ok := itf.(string); ok {
+	if s, ok := v.(string); ok {
 		return []byte(s)
 	}
 
 	return def
+}
+
+func (g *GetStruct) GetBytes(key string, def []byte) []byte {
+	v := g.GetInterface(key, def)
+
+	return ToBytes(v, def)
 }
