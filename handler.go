@@ -36,6 +36,10 @@ func (h *httpHandler) RenderJson(v interface{}, status int) {
 	h.Response.RenderJson(v, status)
 }
 
+func (h *httpHandler) RenderJsonNoWrap(v interface{}) {
+	h.Response.RenderJsonNoWrap(v)
+}
+
 func (h *httpHandler) RenderError(err string) {
 	h.Response.RenderError(err)
 }

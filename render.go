@@ -76,6 +76,13 @@ func (w *RenderStruct) RenderJson(v interface{}, status int) {
 	w.Write(buf)
 }
 
+func (w *RenderStruct) RenderJsonNoWrap(v interface{}) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	buf, _ := json.Marshal(v)
+	w.Write(buf)
+}
+
 func (w *RenderStruct) RenderError(err string) {
 	type Result struct {
 		Status int    `json:"status"`
