@@ -159,6 +159,8 @@ func (g *GetStruct) GetTime(key string, def time.Time, ft string) time.Time {
 	return ToTime(v, def, ft)
 }
 
+// strconv.ParseBool can parse 1 & 0
+// when v is string "", return false
 func ToBool(v interface{}, def bool) bool {
 	if b, ok := v.(bool); ok {
 		return b
@@ -176,8 +178,11 @@ func ToBool(v interface{}, def bool) bool {
 		v = ss[0]
 	}
 	if s, ok := v.(string); ok {
-		if s == "1" || s == "on" {
+		if s == "on" {
 			return true
+		}
+		if s == "off" || s == "" {
+			return false
 		}
 		if b, err := strconv.ParseBool(s); err == nil {
 			return b
