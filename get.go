@@ -6,6 +6,7 @@
 package goutils
 
 import (
+	"encoding/binary"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -57,6 +58,9 @@ func ToInt64(v interface{}, def int64) int64 {
 	}
 	if i, ok := v.(float64); ok {
 		return int64(i)
+	}
+	if b, ok := v.([]byte); ok {
+		return int64(binary.BigEndian.Uint64(b))
 	}
 	if ss, ok := v.([]string); ok {
 		v = ss[0]
