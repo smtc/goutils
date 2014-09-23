@@ -123,13 +123,16 @@ func ToString(v interface{}, def string) string {
 	if ss, ok := v.([]string); ok {
 		return strings.Join(ss, ",")
 	}
-	if si, ok := v.([]interface{}); ok {
+
+	fv := reflect.ValueOf(v)
+	if fv.Kind() == reflect.Slice {
 		var ss []string
-		for _, s := range si {
-			ss = append(ss, fmt.Sprintf("%v", s))
+		for i := 0; i < fv.Len(); i++ {
+			ss = append(ss, fmt.Sprintf("%v", fv.Index(i).Interface()))
 		}
 		return strings.Join(ss, ",")
 	}
+
 	if t, ok := v.(time.Time); ok {
 		return t.Format(TIMEFORMAT)
 	}
