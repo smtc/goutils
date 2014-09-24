@@ -149,6 +149,12 @@ func ToTime(v interface{}, def time.Time, ft string) time.Time {
 	if t, ok := v.(time.Time); ok {
 		return t
 	}
+	if t, ok := v.(float64); ok {
+		return time.Unix(t, 0)
+	}
+	if t, ok := v.(int64); ok {
+		return time.Unix(t, 0)
+	}
 	if ss, ok := v.([]string); ok {
 		v = ss[0]
 	}

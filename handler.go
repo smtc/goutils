@@ -2,6 +2,7 @@ package goutils
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/zenazn/goji/web"
 )
@@ -10,8 +11,10 @@ type httpHandler struct {
 	Env      *GetStruct
 	Param    *GetStruct
 	Query    *GetStruct
+	Form     url.Values
 	Response *RenderStruct
 	Request  *RequestStruct
+	r        *http.Request
 }
 
 func HttpHandler(c web.C, w http.ResponseWriter, r *http.Request) *httpHandler {
@@ -21,6 +24,7 @@ func HttpHandler(c web.C, w http.ResponseWriter, r *http.Request) *httpHandler {
 		Query:    Getter(r.URL.Query()),
 		Response: Render(w),
 		Request:  Request(r),
+		r:        r,
 	}
 }
 
@@ -46,4 +50,9 @@ func (h *httpHandler) RenderError(err string) {
 
 func (h *httpHandler) FormatBody(v interface{}) error {
 	return h.Request.FormatBody(v)
+}
+
+func (h *httpHandler) ParseForm() {
+	h.r.ParseForm()
+	h.Form = h.r.Form
 }
