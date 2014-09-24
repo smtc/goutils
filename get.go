@@ -150,7 +150,7 @@ func ToTime(v interface{}, def time.Time, ft string) time.Time {
 		return t
 	}
 	if t, ok := v.(float64); ok {
-		return time.Unix(t, 0)
+		return time.Unix(int64(t), 0)
 	}
 	if t, ok := v.(int64); ok {
 		return time.Unix(t, 0)
