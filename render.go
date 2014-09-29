@@ -42,17 +42,18 @@ func (w *RenderStruct) RenderHtml(path string) {
 	w.Write(buf)
 }
 
-func (w *RenderStruct) RenderPage(v interface{}) {
+func (w *RenderStruct) RenderPage(v interface{}, total int, r *http.Request) {
 	type Page struct {
 		Status  int         `json:"status"`
 		Data    interface{} `json:"data"`
-		total   int
-		hasNext bool
-		size    int
-		page    int
+		Total   int         `json:"total"`
+		hasNext bool        `json:"hasnext"`
+		size    int         `json:"size"`
+		page    int         `json:"page"`
 	}
 	page := Page{
 		Status: 1,
+		Total:  total,
 		Data:   v,
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")

@@ -32,8 +32,8 @@ func (h *httpHandler) RenderHtml(path string) {
 	h.Response.RenderHtml(path)
 }
 
-func (h *httpHandler) RenderPage(v interface{}) {
-	h.Response.RenderPage(v)
+func (h *httpHandler) RenderPage(v interface{}, total int) {
+	h.Response.RenderPage(v, total, h.r)
 }
 
 func (h *httpHandler) RenderJson(v interface{}, status int) {
@@ -55,4 +55,17 @@ func (h *httpHandler) FormatBody(v interface{}) error {
 func (h *httpHandler) ParseForm() {
 	h.r.ParseForm()
 	h.Form = h.r.Form
+}
+
+func (h *httpHandler) GetPageSize() (int, int) {
+	var (
+		page int
+		size int
+	)
+	page = h.Query.GetInt("page", 1)
+	if page < 1 {
+		page = 1
+	}
+	size = h.Query.GetInt("size", 20)
+	return page, size
 }

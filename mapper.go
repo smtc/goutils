@@ -48,14 +48,14 @@ func ToMap(v interface{}, keys []string, mode filterMode) (map[string]interface{
 	switch fv.Kind() {
 	case reflect.Map:
 		for _, k := range fv.MapKeys() {
-			value := replaceTime(fv.MapIndex(k).Interface())
+			value := replaceTime(fv.MapIndex(k).Interface(), "")
 			m[k.String()] = value
 		}
 
 	case reflect.Struct:
 		for i := 0; i < fv.NumField(); i++ {
 			typeField := fv.Type().Field(i)
-			value := replaceTime(fv.Field(i).Interface())
+			value := replaceTime(fv.Field(i).Interface(), typeField.Tag.Get("format"))
 			tag := typeField.Tag.Get("json")
 			if tag == "-" {
 				continue
@@ -71,9 +71,14 @@ func ToMap(v interface{}, keys []string, mode filterMode) (map[string]interface{
 	return filterMap(m, keys, mode), nil
 }
 
-func replaceTime(v interface{}) interface{} {
+func replaceTime(v interface{}, ft string) interface{} {
+	if ft == "date" {
+		ft = "2006-01-02"
+	} else {
+		ft = ""
+	}
 	if t, ok := v.(time.Time); ok {
-		return Time{t, ""}
+		return Time{t, ft}
 	}
 	return v
 }
