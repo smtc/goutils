@@ -41,6 +41,9 @@ func ToMap(v interface{}, keys []string, mode filterMode) (map[string]interface{
 	m := make(map[string]interface{})
 
 	fv := reflect.ValueOf(v)
+	if fv.Kind() == reflect.Ptr {
+		fv = fv.Elem()
+	}
 	//ft := reflect.TypeOf(v)
 	switch fv.Kind() {
 	case reflect.Map:
@@ -78,6 +81,9 @@ func replaceTime(v interface{}) interface{} {
 func ToMapList(v interface{}, keys []string, mode filterMode) ([]map[string]interface{}, error) {
 	s := reflect.ValueOf(v)
 
+	if s.Kind() == reflect.Ptr {
+		s = s.Elem()
+	}
 	if s.Kind() != reflect.Slice {
 		m, err := ToMap(v, keys, mode)
 		return []map[string]interface{}{m}, err
