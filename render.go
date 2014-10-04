@@ -62,14 +62,16 @@ func (w *RenderStruct) RenderPage(v interface{}, total int, r *http.Request) {
 	w.Write(buf)
 }
 
-func (w *RenderStruct) RenderJson(v interface{}, status int) {
+func (w *RenderStruct) RenderJson(v interface{}, status int, msg string) {
 	type Result struct {
 		Status int         `json:"status"`
 		Data   interface{} `json:"data"`
+		Msg    string      `json:"msg"`
 	}
 	result := Result{
 		Status: status,
 		Data:   v,
+		Msg:    msg,
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 

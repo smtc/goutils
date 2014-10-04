@@ -4,15 +4,15 @@ import (
 	"testing"
 )
 
-func TestObjectID(t *testing.T) {
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
-	println(ObjectID())
+func TestObjectId(t *testing.T) {
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
+	println(ObjectId())
 }

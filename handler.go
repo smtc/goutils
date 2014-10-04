@@ -36,8 +36,8 @@ func (h *httpHandler) RenderPage(v interface{}, total int) {
 	h.Response.RenderPage(v, total, h.r)
 }
 
-func (h *httpHandler) RenderJson(v interface{}, status int) {
-	h.Response.RenderJson(v, status)
+func (h *httpHandler) RenderJson(v interface{}, status int, msg string) {
+	h.Response.RenderJson(v, status, msg)
 }
 
 func (h *httpHandler) RenderJsonNoWrap(v interface{}) {
