@@ -31,6 +31,10 @@ func RandomString(l int) string {
 	return res
 }
 
+func init() {
+	_p2()
+}
+
 // ObjectID —— 类似于monogodb中的objectID
 //
 // 由一个int32和一个int64编码为36进制
